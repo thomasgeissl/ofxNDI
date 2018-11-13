@@ -1,7 +1,7 @@
 # ofxNDI
 
 ## description
-ofxLiveSet is an openframeworks addon to receive and send NDI streams. It extends the ofVideoGrabber class.
+ofxNDI is an openframeworks addon to receive and send NDI streams. It extends the ofVideoGrabber class.
 
 Currently only osx libs added and tested. Theoretically it should work for windows too, linux libs are not yet added.
 

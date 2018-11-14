@@ -30,31 +30,17 @@ common:
 	# but if the addon or addon libraries need special search paths they can be
 	# specified here separated by spaces or one per line using +=
 	# ADDON_INCLUDES =
-	ADDON_INCLUDES = libs/libndi/include
-	ADDON_INCLUDES += src/
+	
 	# any special flag that should be passed to the compiler when using this
 	# addon
 	# ADDON_CFLAGS =
 	
 	# any special flag that should be passed to the linker when using this
 	# addon, also used for system libraries with -lname
-linux64:
-	# Only needs to link with these three libs, not any of the Plugins folder
-	# ADDON_LIBS  = libs/libndi/lib/osx/libndi.dylib
-
-	ADDON_LIBS  =
-	ADDON_LIBS += libs/libndi/lib/x86_64-linux-gnu/libndi.so
-
-osx:
-
-	# any special flag that should be passed to the linker when using this
-	# addon, also used for system libraries with -lname
 	ADDON_LDFLAGS += -rpath ../../../../addons/ofxNDI/libs/libndi/lib/osx
 
-
-	ADDON_LIBS  =
-	ADDON_LIBS += libs/libndi/lib/osx/libndi.dylib
-
+	# Only needs to link with these three libs, not any of the Plugins folder
+	# ADDON_LIBS  = libs/libndi/lib/osx/libndi.dylib
 
 	# All of the libs, including those inside the Plugins folder, do need to be
 	# available for loading at runtime, so copy them into the bin folder,

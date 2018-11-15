@@ -9,5 +9,6 @@ class ofApp : public ofBaseApp{
 		void draw();
 
 		ofxNDISender _ndiSender;
-		ofVideoGrabber _videoGrabber;
-};
+		ofImage screen;
+		
+	};

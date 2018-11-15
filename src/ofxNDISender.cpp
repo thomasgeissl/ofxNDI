@@ -12,6 +12,7 @@ ofxNDISender::ofxNDISender(string name)
 
 	unsigned int width = 640;
 	unsigned int height = 480;
+
 	_frame = {
 		// Resolution
 		width,
@@ -30,36 +31,54 @@ ofxNDISender::ofxNDISender(string name)
 		// Timecode (synthesized for us !)
 		NDIlib_send_timecode_synthesize,
 		// The video memory used for this frame
-		(BYTE*)malloc(width* height * 4),
+		(uint8_t*)malloc(width* height * 4),
 		// The line to line stride of this image
 		(unsigned int)(width) * 4
 	};
 	memset((void*)_frame.p_data, 0, width * height * 4);
 }
 
-void ofxNDISender::setMetaData(string longName, string shortName, string manufacturer, string version, string session, string modelName, string serial){
-	string metaDataString;
-	metaDataString += "<ndi_product long_name=\"+longName+\" ";
-	metaDataString += "short_name=\"+shortName+\" ";
-	metaDataString += "manufacturer=\"+manufacturer+\" ";
-	metaDataString += "version=\"+version+\" ";
-	metaDataString += "session=\"+session+\" ";
-	metaDataString += "model_name=\"+modelName+\" ";
-	metaDataString += "serial=\"+serial+\">";
-	const NDIlib_metadata_frame_t metaData = {
-		// The length
-		(DWORD)::strlen(metaDataString.c_str()),
-		// Timecode (synthesized for us !)
-		NDIlib_send_timecode_synthesize,
-		// The string
-		(CHAR*)metaDataString.c_str()
-	};
+void ofxNDISender::setMetaData(string longName,
+string shortName,
+string manufacturer,
+string version,
+string session,
+string modelName,
+string serial){
+
+	NDIlib_metadata_frame_t metaData;
+
+	std::string xml =	"<ndi_product long_name=\""	+ longName 		+ "\" " +
+	 					"short_name=\""				+ shortName 	+ "\" " +
+	 					"manufacturer=\""			+ manufacturer 	+ "\" " + 
+	 					"version=\"" 				+ version 		+ "\" " +
+	 					"session=\"" 				+ session 		+ "\" " +
+	 					"model_name=\"" 			+ modelName 	+ "\" " +
+	 					"serial=\"" 				+ serial 		+ "\">" ;
+	
+	// char *cstr = new char[xml.length() + 1];
+	// strcpy(cstr, xml.c_str());
+	
+
+	std::vector<char> chars(xml.c_str(), xml.c_str() + xml.size() + 1u);
+
+	metaData.p_data  =  &chars[0];
+	metaData.timecode = NDIlib_send_timecode_synthesize;
+	//  = {
+	// 	// The length
+	// 	(DWORD)::strlen(metaDataString.c_str()),
+	// 	// Timecode (synthesized for us !)
+	// 	NDIlib_send_timecode_synthesize,
+	// 	// The string
+	// 	(CHAR*)metaDataString.c_str()
+	// };
 	NDIlib_send_add_connection_metadata(_sender, &metaData);
 }
 
 void ofxNDISender::send(ofPixels & pixels){
 	if(_frame.xres != pixels.getWidth() || _frame.yres != pixels.getHeight()){
-		ofLogNotice()<<"allocate";
+		ofLogNotice() << "allocate";
+
 		_frame = {
 			// Resolution
 			(unsigned int) (pixels.getWidth()),
@@ -78,7 +97,7 @@ void ofxNDISender::send(ofPixels & pixels){
 			// Timecode (synthesized for us !)
 			NDIlib_send_timecode_synthesize,
 			// The video memory used for this frame
-			(BYTE*)malloc(pixels.getWidth() * pixels.getHeight() * 4),
+			(uint8_t*)malloc(pixels.getWidth() * pixels.getHeight() * 4),
 			// The line to line stride of this image
 			(unsigned int)(pixels.getWidth()) * 4
 		};
@@ -119,7 +138,7 @@ void ofxNDISender::send(ofPixels & pixels){
 	}
 	}
 
-	NDIlib_send_send_video(_sender, &_frame);
+	NDIlib_send_send_video_v2(_sender, &_frame);
 }
 
 

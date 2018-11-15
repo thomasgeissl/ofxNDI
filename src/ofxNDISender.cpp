@@ -11,7 +11,7 @@ ofxNDISender::ofxNDISender(string name)
 	}
 
 	unsigned int width = 640;
-	unsigned int height = 480;
+	unsigned int height = 360;
 
 	_frame = {
 		// Resolution

@@ -2,23 +2,32 @@
 
 ofApp::ofApp()
 {
-	// _videoGrabber.setup(640, 480);
-	_ndiSender.setMetaData("ofxNDISender example", "sender example", "ofxNDI", "0.0.0", "", "", "");
-	screen.allocate(360, 180, OF_IMAGE_COLOR_ALPHA);
+	ndiSender.setMetaData("ofxNDISender example", "sender example", "ofxNDI", "0.0.0", "", "", "");
+	colorPixels.allocate(width, height, OF_PIXELS_RGB);
+	screen.allocate(width, height, OF_IMAGE_COLOR);
+	// color alpha pixels, use x to control alpha
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			colorPixels.setColor(x, y, ofColor(ofRandom(255), 133, 200));
+		}
+	}
 }
 void ofApp::update()
 {
-	// _videoGrabber.update();
-	// if(_videoGrabber.isFrameNew()){
-
-	_ndiSender.send(screen.getPixels());
-	// }
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			colorPixels.setColor(x, y, ofColor(ofRandom(255), 133, 200));
+		}
+	}
+	ndiSender.send(colorPixels);
+	screen.setFromPixels(colorPixels);
 }
 void ofApp::draw()
 {
 	ofBackground(0, 0, 0);
-	ofSetColor(255);
-	ofDrawEllipse(ofGetWidth() / 2 + ofRandom(10), ofGetHeight() / 2 + ofRandom(10), 50, 50);
-	screen.grabScreen(ofGetWidth()/2 - 180, ofGetHeight() / 2 - 90 , 360, 180);
-
+	screen.draw(ofGetWidth() / 2 - width / 2, ofGetHeight() / 2 - height / 2);
 }

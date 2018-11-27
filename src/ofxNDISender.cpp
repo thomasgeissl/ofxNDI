@@ -1,7 +1,6 @@
 #include "ofxNDISender.h"
 
-ofxNDISender::ofxNDISender(string name)
-{
+ofxNDISender::ofxNDISender(std::string name){
 	const NDIlib_send_create_t descriptor = {name.c_str(), NULL, TRUE, FALSE};
 	_sender = NDIlib_send_create(&descriptor);
 	if (!NDIlib_initialize())
@@ -37,8 +36,8 @@ ofxNDISender::ofxNDISender(string name)
 	memset((void*)_frame.p_data, 0, width * height * 4);
 }
 
-void ofxNDISender::setMetaData(string longName, string shortName, string manufacturer, string version, string session, string modelName, string serial){
-	string metaDataString;
+void ofxNDISender::setMetaData(std::string longName, std::string shortName, std::string manufacturer, std::string version, std::string session, std::string modelName, std::string serial){
+	std::string metaDataString;
 	metaDataString += "<ndi_product long_name=\"+longName+\" ";
 	metaDataString += "short_name=\"+shortName+\" ";
 	metaDataString += "manufacturer=\"+manufacturer+\" ";
@@ -84,42 +83,44 @@ void ofxNDISender::send(ofPixels & pixels){
 		};
 	}
 
-	switch(pixels.getPixelFormat()){
-	case OF_PIXELS_RGB:
-	case OF_PIXELS_BGR:
-	{
-		for(int y = 0; y < pixels.getHeight(); y++){
-			for(int x = 0; x < pixels.getWidth(); x++){
-				auto index = (x*4 + y*pixels.getWidth()*4);
-				_frame.p_data[index] = pixels.getColor(x, y).b;
-				_frame.p_data[index+1] = pixels.getColor(x, y).g;
-				_frame.p_data[index+2] = pixels.getColor(x, y).r;
-				_frame.p_data[index+3] = 255;
-			}
-		}
-		break;
-	}
-	case OF_PIXELS_RGBA:
-	case OF_PIXELS_BGRA:
-	{
-		for(int y = 0; y < pixels.getHeight(); y++){
-			for(int x = 0; x < pixels.getWidth(); x++){
-				auto index = (x*4 + y*pixels.getWidth()*4);
-				_frame.p_data[index] = pixels.getColor(x, y).b;
-				_frame.p_data[index+1] = pixels.getColor(x, y).g;
-				_frame.p_data[index+2] = pixels.getColor(x, y).r;
-				_frame.p_data[index+3] = pixels.getColor(x, y).a;
-			}
-		}
-	}
-	default:{
-		ofLogError("ofxNDISender")<<"pixel type "<<pixels.getPixelFormat()<<" is not supported yet";
-		return;
-		break;
-	}
-	}
-
-	NDIlib_send_send_video(_sender, &_frame);
+    switch(pixels.getPixelFormat()){
+        case OF_PIXELS_RGB:
+        case OF_PIXELS_BGR:
+        {
+            int index = 0;
+            for(auto line: pixels.getLines()){
+                for(auto pixel: line.getPixels()){
+                    _frame.p_data[index] = pixel[2];
+                    _frame.p_data[index+1] = pixel[1];
+                    _frame.p_data[index+2] = pixel[0];
+                    _frame.p_data[index+3] = 255;
+                    index += 4;
+                }
+            }
+            break;
+        }
+        case OF_PIXELS_RGBA:
+        case OF_PIXELS_BGRA:
+        {
+            int index = 0;
+            for(auto line: pixels.getLines()){
+                for(auto pixel: line.getPixels()){
+                    _frame.p_data[index] = pixel[2];
+                    _frame.p_data[index+1] = pixel[1];
+                    _frame.p_data[index+2] = pixel[0];
+                    _frame.p_data[index+3] = pixel[3];
+                    index += 4;
+                }
+            }
+        }
+        default:{
+            ofLogError("ofxNDISender")<<"pixel type "<<ofToString(pixels.getPixelFormat())<<" is not supported yet";
+            return;
+            break;
+        }
+    }
+    
+    NDIlib_send_send_video(_sender, &_frame);
 }
 
 

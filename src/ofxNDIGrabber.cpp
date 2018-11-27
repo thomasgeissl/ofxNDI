@@ -1,7 +1,6 @@
 #include "ofxNDIGrabber.h"
 
-ofxNDIGrabber::ofxNDIGrabber()
-{
+ofxNDIGrabber::ofxNDIGrabber(){
     _finder = NULL;
     _receiver = NULL;
     _sources = NULL;
@@ -24,6 +23,7 @@ ofxNDIGrabber::~ofxNDIGrabber(){
     if(_finder) NDIlib_find_destroy(_finder);
     if(isInitialized())	NDIlib_destroy();
 }
+
 bool ofxNDIGrabber::setup(int w, int h){
     ofLogNotice("ofxNDIGrabber")<<"ofxNDIGrabber::setup has no effect";
     return true;
@@ -133,9 +133,8 @@ ofPixelFormat ofxNDIGrabber::getPixelFormat() const{
     return _pixels.getPixelFormat();
 }
 
-vector<ofVideoDevice> ofxNDIGrabber::listDevices() const{
-    
-    vector<ofVideoDevice> devices;
+std::vector<ofVideoDevice> ofxNDIGrabber::listDevices() const{ 
+    std::vector<ofVideoDevice> devices;
     for(auto i = 0; i < _numberOfSources; i++){
         devices.push_back(ofVideoDevice());
         devices[i].deviceName = _sources[i].p_ndi_name;
@@ -149,7 +148,7 @@ void ofxNDIGrabber::setDevice(ofVideoDevice device){
 void ofxNDIGrabber::setDevice(int id){
     createReceiver(id);
 }
-void ofxNDIGrabber::setDevice(string name){
+void ofxNDIGrabber::setDevice(std::string name){
     for(auto i = 0; i < _numberOfSources; i++){
         auto source = _sources[i];
         if(source.p_ndi_name == name){
@@ -163,14 +162,12 @@ std::string ofxNDIGrabber::getNDIVersion(){
     return NDIlib_version();
 }
 
-ofPixels &ofxNDIGrabber::getPixels()
-{
+ofPixels &ofxNDIGrabber::getPixels(){
     _newFrame = false;
     return _pixels;
 }
 
-const ofPixels &ofxNDIGrabber::getPixels() const
-{
+const ofPixels &ofxNDIGrabber::getPixels() const{
     return _pixels;
 }
 
@@ -199,14 +196,8 @@ bool ofxNDIGrabber::createFinder(){
 }
 int ofxNDIGrabber::findSources(){
     uint32_t no_sources = 0;
-    auto startTime = ofGetElapsedTimef();
-//    while (!no_sources)
-    {
-        auto currentTime = ofGetElapsedTimef();
-
-        ofLogNotice("main")<<"waiting for sources";
-        _sources = NDIlib_find_get_sources(_finder, &no_sources, 3000);
-    }
+    ofLogNotice("main")<<"waiting for sources";
+    _sources = NDIlib_find_get_sources(_finder, &no_sources, 3000);
     ofLogNotice("ofxNDIGrabber")<<"found " << no_sources <<" sources ";
     _numberOfSources = no_sources;
     return no_sources;

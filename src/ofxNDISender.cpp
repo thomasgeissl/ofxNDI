@@ -1,7 +1,6 @@
 #include "ofxNDISender.h"
 
-ofxNDISender::ofxNDISender(string name)
-{
+ofxNDISender::ofxNDISender(std::string name){
 	const NDIlib_send_create_t descriptor = {name.c_str(), NULL, TRUE, FALSE};
 	_sender = NDIlib_send_create(&descriptor);
 	if (!NDIlib_initialize())
@@ -37,8 +36,8 @@ ofxNDISender::ofxNDISender(string name)
 	memset((void*)_frame.p_data, 0, width * height * 4);
 }
 
-void ofxNDISender::setMetaData(string longName, string shortName, string manufacturer, string version, string session, string modelName, string serial){
-	string metaDataString;
+void ofxNDISender::setMetaData(std::string longName, std::string shortName, std::string manufacturer, std::string version, std::string session, std::string modelName, std::string serial){
+	std::string metaDataString;
 	metaDataString += "<ndi_product long_name=\"+longName+\" ";
 	metaDataString += "short_name=\"+shortName+\" ";
 	metaDataString += "manufacturer=\"+manufacturer+\" ";
@@ -115,7 +114,7 @@ void ofxNDISender::send(ofPixels & pixels){
             }
         }
         default:{
-            ofLogError("ofxNDISender")<<"pixel type "<<pixels.getPixelFormat()<<" is not supported yet";
+            ofLogError("ofxNDISender")<<"pixel type "<<ofToString(pixels.getPixelFormat())<<" is not supported yet";
             return;
             break;
         }

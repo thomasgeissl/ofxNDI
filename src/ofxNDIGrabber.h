@@ -64,6 +64,4 @@ public ofThread
   
   bool _initialized;
   bool _newFrame;
-  
-  ofMutex _mutex;
 };

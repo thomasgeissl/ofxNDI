@@ -8,8 +8,18 @@ ofxNDI is an openframeworks addon to receive and send NDI streams. It extends th
 
 ## Tested On
 
-Currently only linux libs are added and tested. Theoretically it should work for windows and MacOS too.
+Currently only linux and osx libs are added and tested. Theoretically it should work for windows too.
 
+## Troubelshooting
+
+You might need to add the following run script to your build phases in xcode or fix the addon_config.mk and PR.
+
+# Copy libndi.dylib
+cp $OF_PATH/addons/ofxNDI/libs/libndi/lib/osx/libndi.dylib $TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/
+
+cd $TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/
+
+install_name_tool -change @rpath/libndi.3.dylib @executable_path/libndi.3.dylib $PRODUCT_NAME
 
 ## License
 

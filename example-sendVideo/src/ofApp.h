@@ -13,8 +13,4 @@ class ofApp : public ofBaseApp{
 		ofPixels colorPixels;
 		int width = 640;
 		int height = 360;
-
-
-
-		
 	};

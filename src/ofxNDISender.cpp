@@ -1,7 +1,6 @@
 #include "ofxNDISender.h"
 
-ofxNDISender::ofxNDISender(std::string name)
-{
+ofxNDISender::ofxNDISender(std::string name){
 	const NDIlib_send_create_t descriptor = {name.c_str(), NULL, TRUE, FALSE};
 	_sender = NDIlib_send_create(&descriptor);
 	if (!NDIlib_initialize())
@@ -63,12 +62,9 @@ void ofxNDISender::setMetaData(std::string longName,
 	NDIlib_send_add_connection_metadata(_sender, &metaData);
 }
 
-void ofxNDISender::send(ofPixels &pixels)
-{
+void ofxNDISender::send(ofPixels & pixels){
 	if (_frame.xres != pixels.getWidth() || _frame.yres != pixels.getHeight())
 	{
-		ofLogNotice() << "allocate";
-
 		_frame = {
 				// Resolution
 				(int)(pixels.getWidth()),

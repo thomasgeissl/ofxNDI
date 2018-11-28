@@ -24,6 +24,7 @@ ofxNDIGrabber::~ofxNDIGrabber(){
   if(_finder) NDIlib_find_destroy(_finder);
   if(isInitialized())	NDIlib_destroy();
 }
+
 bool ofxNDIGrabber::setup(int w, int h){
   ofLogNotice("ofxNDIGrabber") << "ofxNDIGrabber::setup has no effect";
   return true;
@@ -137,15 +138,14 @@ ofPixelFormat ofxNDIGrabber::getPixelFormat() const{
   return _pixels.getPixelFormat();
 }
 
-vector<ofVideoDevice> ofxNDIGrabber::listDevices() const{
-  
-  vector<ofVideoDevice> devices;
-  for(auto i = 0; i < _numberOfSources; i++){
-    devices.push_back(ofVideoDevice());
-    devices[i].deviceName = _sources[i].p_ndi_name;
-    devices[i].id = i;
-  }
-  return devices;
+std::vector<ofVideoDevice> ofxNDIGrabber::listDevices() const{ 
+    std::vector<ofVideoDevice> devices;
+    for(auto i = 0; i < _numberOfSources; i++){
+        devices.push_back(ofVideoDevice());
+        devices[i].deviceName = _sources[i].p_ndi_name;
+        devices[i].id = i;
+    }
+    return devices;
 }
 void ofxNDIGrabber::setDevice(ofVideoDevice device){
   createReceiver(device.id);
@@ -153,7 +153,7 @@ void ofxNDIGrabber::setDevice(ofVideoDevice device){
 void ofxNDIGrabber::setDevice(int id){
   createReceiver(id);
 }
-void ofxNDIGrabber::setDevice(string name){
+void ofxNDIGrabber::setDevice(std::string name){
   for(auto i = 0; i < _numberOfSources; i++){
     auto source = _sources[i];
     if(source.p_ndi_name == name){

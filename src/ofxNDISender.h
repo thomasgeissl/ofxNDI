@@ -11,9 +11,9 @@
 
 class ofxNDISender{
 	public:
-		ofxNDISender(string name = "ofxNDISender");
+		ofxNDISender(std::string name = "ofxNDISender");
 
-		void setMetaData(string longName, string shortName, string manufacturer, string version, string session, string modelName, string serial);
+		void setMetaData(std::string longName, std::string shortName, std::string manufacturer, std::string version, std::string session, std::string modelName, std::string serial);
 		void send(ofPixels & pixels);
 
 	private:

@@ -11,7 +11,10 @@
 *.pch
 # Compiled Dynamic libraries
 *.so
+!libs/libndi/lib/x86_64-linux-gnu/libndi.so.3
+!libs/libndi/lib/x86_64-linux-gnu/libndi.so.3.7.1
 *.dylib
+!libs/libndi/lib/osx_x64/libndi.3.dylib
 *.dll
 # Fortran module files
 *.mod

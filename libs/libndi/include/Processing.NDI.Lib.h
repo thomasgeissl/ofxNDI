@@ -1,41 +1,86 @@
 #pragma once
 
-//-------------------------------------------------------------------------------------------------------------------
-// (c)2016 NewTek, inc.
+// NOTE : The following MIT license applies to this file ONLY and not to the SDK as a whole. Please review the SDK documentation 
+// for the description of the full license terms, which are also provided in the file "NDI License Agreement.pdf" within the SDK or 
+// online at http://new.tk/ndisdk_license/. Your use of any part of this SDK is acknowledgment that you agree to the SDK license 
+// terms. The full NDI SDK may be downloaded at https://www.newtek.com/ndi/sdk/
 //
-// This library is provided under the license terms that are provided within the 
-// NDI SDK installer. If you do not expressely agree to these terms then this library
-// may be used for no purpose at all.
-//
-// This current SDK is BETA and may not be used in any product release. It is provided
-// for development use only.
-//
-// For any questions or comments please email: ndi@newtek.com
+//***********************************************************************************************************************************************
 // 
-//-------------------------------------------------------------------------------------------------------------------
+// Copyright(c) 2014-2018 NewTek, inc
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation 
+// files(the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, 
+// merge, publish, distribute, sublicense, and / or sell copies of the Software, and to permit persons to whom the Software is 
+// furnished to do so, subject to the following conditions :
+//
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+//***********************************************************************************************************************************************
 
 // Is this library being compiled, or imported by another application.
 #ifdef _WIN32
+#define PROCESSINGNDILIB_DEPRECATED __declspec(deprecated)
 #ifdef PROCESSINGNDILIB_EXPORTS
 #ifdef __cplusplus
 #define PROCESSINGNDILIB_API extern "C" __declspec(dllexport)
-#else
+#else // __cplusplus
 #define PROCESSINGNDILIB_API __declspec(dllexport)
-#endif
-#else
+#endif // __cplusplus
+#else // PROCESSINGNDILIB_EXPORTS
 #ifdef __cplusplus
 #define PROCESSINGNDILIB_API extern "C" __declspec(dllimport)
-#else
+#else // __cplusplus
 #define PROCESSINGNDILIB_API __declspec(dllimport)
-#endif
-#endif
-#else
+#endif // __cplusplus
+#ifdef _WIN64
+#define NDILIB_LIBRARY_NAME  "Processing.NDI.Lib.x64.dll"
+#define NDILIB_REDIST_FOLDER "NDI_RUNTIME_DIR_V3"
+#define NDILIB_REDIST_URL    "http://new.tk/NDIRedistV3"
+#else // _WIN64
+#define NDILIB_LIBRARY_NAME  "Processing.NDI.Lib.x86.dll"
+#define NDILIB_REDIST_FOLDER "NDI_RUNTIME_DIR_V3"
+#define NDILIB_REDIST_URL    "http://new.tk/NDIRedistV3"
+#endif // _WIN64
+#endif // PROCESSINGNDILIB_EXPORTS
+#else // _WIN32
+#ifdef __APPLE__
+#define NDILIB_LIBRARY_NAME  "libndi.3.dylib"
+#define NDILIB_REDIST_FOLDER "NDI_RUNTIME_DIR_V3"
+#define NDILIB_REDIST_URL    "http://new.tk/NDIRedistV3Apple"
+#else // __APPLE__
+#define NDILIB_LIBRARY_NAME  "libndi.so.3"
+#define NDILIB_REDIST_FOLDER "NDI_RUNTIME_DIR_V3"
+#define NDILIB_REDIST_URL    ""
+#endif // __APPLE__
+#define PROCESSINGNDILIB_DEPRECATED
 #ifdef __cplusplus
 #define PROCESSINGNDILIB_API extern "C" __attribute((visibility("default")))
-#else
+#else // __cplusplus
 #define PROCESSINGNDILIB_API __attribute((visibility("default")))
-#endif
-#endif
+#endif // __cplusplus
+#endif // _WIN32
+
+#ifndef NDILIB_CPP_DEFAULT_CONSTRUCTORS
+#ifdef __cplusplus
+#define NDILIB_CPP_DEFAULT_CONSTRUCTORS 1
+#else // __cplusplus
+#define NDILIB_CPP_DEFAULT_CONSTRUCTORS 0
+#endif // __cplusplus
+#endif // NDILIB_CPP_DEFAULT_CONSTRUCTORS
+
+#ifndef NDILIB_CPP_DEFAULT_VALUE
+#ifdef __cplusplus
+#define NDILIB_CPP_DEFAULT_VALUE(a) =(a)
+#else // __cplusplus
+#define NDILIB_CPP_DEFAULT_VALUE(a)
+#endif // __cplusplus
+#endif // NDILIB_CPP_DEFAULT_VALUE
 
 // Data structures shared by multiple SDKs
 #include "Processing.NDI.compat.h"
@@ -49,7 +94,7 @@
 // currently NDILib requires SSE4.2 instructions (see documentation). You can verify 
 // a specific CPU against the library with a call to NDIlib_is_supported_CPU()
 PROCESSINGNDILIB_API
-const bool NDIlib_initialize(void);
+bool NDIlib_initialize(void);
 
 PROCESSINGNDILIB_API
 void NDIlib_destroy(void);
@@ -57,17 +102,38 @@ void NDIlib_destroy(void);
 PROCESSINGNDILIB_API
 const char* NDIlib_version(void);
 
-// Recover whether the current CPU in the system is capable of running NDILib. Currently
-// NDILib requires SSE4.1 https://en.wikipedia.org/wiki/SSE4 Creating devices when your 
-// CPU is not capable will return NULL and not crash. This function is provided to help
-// understand why they cannot be created or warn users before they run.
+// Recover whether the current CPU in the system is capable of running NDILib.
 PROCESSINGNDILIB_API
-const bool NDIlib_is_supported_CPU(void);
+bool NDIlib_is_supported_CPU(void);
 
-// The main SDKs
+// The finding (discovery API)
 #include "Processing.NDI.Find.h"
+
+// The receiving video and audio API
 #include "Processing.NDI.Recv.h"
+
+// Extensions to support PTZ control, etc...
+#include "Processing.NDI.Recv.ex.h"
+
+// The sending video API
 #include "Processing.NDI.Send.h"
+
+// The routing of inputs API
+#include "Processing.NDI.Routing.h"
 
 // Utility functions
 #include "Processing.NDI.utilities.h"
+
+// Deprecated structures and functions
+#include "Processing.NDI.deprecated.h"
+
+// The frame synchronizer
+#include "Processing.NDI.FrameSync.h"
+
+// Dynamic loading used for OSS libraries
+#include "Processing.NDI.DynamicLoad.h"
+
+// The C++ implementations
+#if NDILIB_CPP_DEFAULT_CONSTRUCTORS
+#include "Processing.NDI.Lib.cplusplus.h"
+#endif // NDILIB_CPP_DEFAULT_CONSTRUCTORS

@@ -8,6 +8,9 @@ class ofApp : public ofBaseApp{
 		void update();
 		void draw();
 
-		ofxNDISender _ndiSender;
-		ofVideoGrabber _videoGrabber;
-};
+		ofxNDISender ndiSender;
+		ofImage screen;
+		ofPixels colorPixels;
+		int width = 640;
+		int height = 360;
+	};

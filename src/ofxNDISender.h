@@ -2,7 +2,7 @@
 #include "ofMain.h"
 
 #include "Processing.NDI.compat.h"
-#include "Processing.NDI.structs.h"
+//#include "Processing.NDI.structs.h"
 #include "Processing.NDI.Lib.h"
 #include "Processing.NDI.Find.h"
 #include "Processing.NDI.utilities.h"
@@ -18,5 +18,5 @@ class ofxNDISender{
 
 	private:
 	NDIlib_send_instance_t _sender;
-	NDIlib_video_frame_t _frame;
+	NDIlib_video_frame_v2_t _frame;
 };

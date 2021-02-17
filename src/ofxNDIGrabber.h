@@ -16,23 +16,23 @@ public ofThread
   ofxNDIGrabber();
   ~ofxNDIGrabber();
   
-  bool setup(int w, int h);
-  void update();
+  bool setup(int w, int h) override;
+  void update() override;
   void draw(float x, float y) const;
   void draw(float x, float y, float width, float height) const;
-  void close();
+  void close() override;
   
   void threadedFunction() override;
   bool isInitialized() const override;
   bool isFrameNew() const override;
   
-  bool setPixelFormat(ofPixelFormat pixelFormat);
+  bool setPixelFormat(ofPixelFormat pixelFormat) override;
   
   float getHeight() const override;
   float getWidth() const override;
   ofPixelFormat getPixelFormat() const override;
   
-  vector<ofVideoDevice> listDevices() const;
+  vector<ofVideoDevice> listDevices() const override;
   void setDevice(ofVideoDevice device);
   void setDevice(int index);
   void setDevice(string name);
